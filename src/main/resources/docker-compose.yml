@@ -1,0 +1,14 @@
+version: "5"
+services:
+  urban-pass-db:
+    image: mongo:latest
+    container_name: "urban-pass-db"
+    ports:
+      - 27017:27017
+  urbanpassplatformdockercompose:
+    image: urbanpassplatformdockercompose:latest
+    container_name: "urbanpassplatformdockercompose"
+    ports:
+      - 9090:8080
+    links:
+      - urban-pass-db

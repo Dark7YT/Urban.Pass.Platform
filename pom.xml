@@ -36,6 +36,10 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,6 +57,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>urbanpassplatform-docker-compose</finalName>
     </build>
 
 </project>
