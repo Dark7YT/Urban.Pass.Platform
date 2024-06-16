@@ -1,5 +1,6 @@
 package org.example.urbanpassplatform.controller;
 
+import org.example.urbanpassplatform.entity.Reaction;
 import org.example.urbanpassplatform.entity.Review;
 import org.example.urbanpassplatform.repository.EventRepository;
 import org.example.urbanpassplatform.repository.ReviewRepository;
@@ -22,15 +23,18 @@ public class ReviewController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/insert")
-    public Review insertReview(@RequestBody Review review) {
-        if (!eventRepository.existsById(review.getEventId())) {
+    @PostMapping("/insert/{eventId}/{userId}")
+    public Review insertReview(@PathVariable String eventId, @PathVariable String userId, @RequestBody Review review) {
+        review.setReaction(new Reaction());
+
+        if (!eventRepository.existsById(eventId)) {
             throw new RuntimeException("Event not found");
         }
-        if (!userRepository.existsById(review.getUserId())) {
+        if (!userRepository.existsById(userId)) {
             throw new RuntimeException("User not found");
         }
-
+        review.setEventId(eventId);
+        review.setUserId(userId);
         return reviewRepository.save(review);
     }
 
@@ -49,10 +53,16 @@ public class ReviewController {
         reviewRepository.deleteById(id);
     }
 
-    @PutMapping("/incrementLikes/{id}")
-    public Review incrementLikes(@PathVariable String id) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
-        review.incrementLikes();
+    @PostMapping("/react/{reviewId}/{userId}")
+    public Review react(@PathVariable String reviewId, @PathVariable String userId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (review.getReaction().getUserIdList().contains(userId)) {
+            throw new RuntimeException("User has already reacted");
+        }
+        review.getReaction().getUserIdList().add(userId);
+        review.setLikes(review.getReaction().getReactionCount());
+
         return reviewRepository.save(review);
     }
 }

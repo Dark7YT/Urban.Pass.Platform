@@ -18,17 +18,7 @@ public class Review extends Auditable {
     private String userId;
     private int rating;
     private String comment;
-    private int likes = 0;
+    private Reaction reaction;
+    private int likes;
 
-    public Review(String _id, String eventId, String userId, int rating, String comment) {
-        this._id = _id;
-        this.eventId = eventId;
-        this.userId = userId;
-        this.rating = rating;
-        this.comment = comment;
-    }
-
-    public void incrementLikes() {
-        this.likes++;
-    }
 }

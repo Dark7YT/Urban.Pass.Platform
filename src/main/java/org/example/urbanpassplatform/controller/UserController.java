@@ -35,6 +35,9 @@ public class UserController {
 
     @PostMapping("/insert")
     public User insertUser(@RequestBody User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
