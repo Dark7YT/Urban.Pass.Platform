@@ -23,4 +23,6 @@ public class Event extends Auditable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
     private Location location;
+    private int maxTickets;
+    private int soldTickets;
 }

@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Document(collection = "Users")
 public class User extends Auditable {
@@ -19,4 +21,9 @@ public class User extends Auditable {
     private String email;
     private String password;
     private String profilePicture;
+    private List<Role> roles;
+    private List<Ticket> tickets;
+    public User() {
+        this.tickets = new ArrayList<>();
+    }
 }

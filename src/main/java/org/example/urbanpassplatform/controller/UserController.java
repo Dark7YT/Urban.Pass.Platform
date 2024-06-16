@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
 import java.math.BigInteger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,8 +42,8 @@ public class UserController {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-        user.setPassword(getSHA256(user.getPassword()));
-
+        user.setTickets(new ArrayList<>());
+        user.setRoles(new ArrayList<>());
         return userRepository.save(user);
     }
 

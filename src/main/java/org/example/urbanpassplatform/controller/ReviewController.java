@@ -6,7 +6,9 @@ import org.example.urbanpassplatform.repository.EventRepository;
 import org.example.urbanpassplatform.repository.ReviewRepository;
 import org.example.urbanpassplatform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -26,12 +28,11 @@ public class ReviewController {
     @PostMapping("/insert/{eventId}/{userId}")
     public Review insertReview(@PathVariable String eventId, @PathVariable String userId, @RequestBody Review review) {
         review.setReaction(new Reaction());
-
         if (!eventRepository.existsById(eventId)) {
-            throw new RuntimeException("Event not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         }
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         review.setEventId(eventId);
         review.setUserId(userId);
