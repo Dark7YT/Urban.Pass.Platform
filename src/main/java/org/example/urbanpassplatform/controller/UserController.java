@@ -1,11 +1,13 @@
 package org.example.urbanpassplatform.controller;
 
-import lombok.Data;
 import org.example.urbanpassplatform.entity.User;
 import org.example.urbanpassplatform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
+import java.math.BigInteger;
 
 import java.util.List;
 
@@ -13,18 +15,33 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    public String getSHA256(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] messageDigest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Autowired
     private UserRepository userRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public UserController() {
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    }
-
     @PostMapping("/insert")
     public User insertUser(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        user.setPassword(getSHA256(user.getPassword()));
+        if (userRepository.existsByPassword(user.getPassword())) {
+            throw new RuntimeException("Password already exists");
+        }
         return userRepository.save(user);
     }
 

@@ -19,4 +19,5 @@ public class User extends Auditable {
     private String password;
     private String email;
     private String profilePicture;
+
 }
