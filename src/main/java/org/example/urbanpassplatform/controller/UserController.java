@@ -42,6 +42,7 @@ public class UserController {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+        user.setPassword(getSHA256(user.getPassword()));
         user.setTickets(new ArrayList<>());
         user.setRoles(new ArrayList<>());
         return userRepository.save(user);
