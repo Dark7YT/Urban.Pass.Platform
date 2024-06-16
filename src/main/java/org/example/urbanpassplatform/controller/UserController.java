@@ -42,9 +42,7 @@ public class UserController {
             throw new RuntimeException("Email already exists");
         }
         user.setPassword(getSHA256(user.getPassword()));
-        if (userRepository.existsByPassword(user.getPassword())) {
-            throw new RuntimeException("Password already exists");
-        }
+
         return userRepository.save(user);
     }
 

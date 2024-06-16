@@ -61,7 +61,18 @@ public class ReviewController {
             throw new RuntimeException("User has already reacted");
         }
         review.getReaction().getUserIdList().add(userId);
-        review.setLikes(review.getReaction().getReactionCount());
+
+        return reviewRepository.save(review);
+    }
+
+    @PutMapping("/unreact/{reviewId}/{userId}")
+    public Review unReact(@PathVariable String reviewId, @PathVariable String userId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("Review not found"));
+
+        if (!review.getReaction().getUserIdList().contains(userId)) {
+            throw new RuntimeException("User has not reacted");
+        }
+        review.getReaction().getUserIdList().remove(userId);
 
         return reviewRepository.save(review);
     }
