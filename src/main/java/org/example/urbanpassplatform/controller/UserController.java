@@ -1,5 +1,6 @@
 package org.example.urbanpassplatform.controller;
 
+import org.example.urbanpassplatform.controller.resource.SignInResource;
 import org.example.urbanpassplatform.entity.User;
 import org.example.urbanpassplatform.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     public String getSHA256(String input) {
@@ -34,8 +36,8 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/insert")
-    public User insertUser(@RequestBody User user) {
+    @PostMapping("/signup")
+    public User signUp(@RequestBody User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
@@ -47,7 +49,18 @@ public class UserController {
         user.setRoles(new ArrayList<>());
         return userRepository.save(user);
     }
+    @PostMapping("/signin")
+    public User signIn(@RequestBody SignInResource user) {
 
+        User existingUser = userRepository.findByUsername(user.username());
+        if (existingUser == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (!getSHA256(user.password()).equals(existingUser.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+        return existingUser;
+    }
     @GetMapping("/findAll")
     public List<User> getUser() {
         return userRepository.findAll();
