@@ -25,4 +25,5 @@ public class Event extends Auditable {
     private Location location;
     private int maxTickets;
     private int soldTickets;
+    private byte[] image;
 }
